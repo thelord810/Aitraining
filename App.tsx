@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { presentationSlides } from './presentationData';
 import { SlideLayout } from './components/SlideLayout';
 import { AgentDemo } from './components/AgentDemo';
-import { ChevronLeft, ChevronRight, Terminal, Brain, MonitorPlay } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Brain, MonitorPlay } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const mainContentRef = useRef<HTMLDivElement>(null);
 
   const nextSlide = useCallback(() => {
     if (currentSlideIndex < presentationSlides.length - 1 && !isTransitioning) {
@@ -28,6 +29,13 @@ const App: React.FC = () => {
     }
   }, [currentSlideIndex, isTransitioning]);
 
+  // Reset scroll position when slide changes
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentSlideIndex]);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,13 +52,13 @@ const App: React.FC = () => {
   const currentSlide = presentationSlides[currentSlideIndex];
 
   return (
-    <div className="min-h-screen w-full bg-[#020617] text-white overflow-hidden flex flex-col relative">
-      {/* Background decorative elements */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none" />
+    <div className="fixed inset-0 bg-[#020617] text-white overflow-hidden font-sans selection:bg-blue-500/30">
+      {/* Fixed Background decorative elements - z-0 */}
+      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none z-0" />
 
-      {/* Header */}
-      <header className="w-full p-6 flex justify-between items-center z-10 glass-panel border-b border-slate-800/50">
+      {/* Fixed Header - z-50 - Fixed height h-20 */}
+      <header className="fixed top-0 left-0 right-0 h-20 px-6 flex justify-between items-center z-50 glass-panel border-b border-slate-800/50">
         <div className="flex items-center space-x-2">
           <div className="p-2 bg-blue-600/20 rounded-lg border border-blue-500/30">
             <Brain className="w-5 h-5 text-blue-400" />
@@ -58,29 +66,41 @@ const App: React.FC = () => {
           <span className="font-semibold text-slate-200 tracking-tight">DevTrain<span className="text-blue-400">.ai</span></span>
         </div>
         <div className="flex items-center space-x-4 text-sm text-slate-400">
-          <span>Agentic Coding Masterclass</span>
+          <span className="hidden lg:inline text-slate-300 font-medium">By Sumit Pathak</span>
+          <span className="hidden lg:inline text-slate-700">|</span>
+          <span className="hidden md:inline">Agentic Coding Masterclass</span>
           <span className="px-2 py-1 bg-slate-800 rounded text-xs font-mono">v2.5</span>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-grow flex flex-col items-center justify-center relative z-10 p-8">
-        <div 
-          className={`w-full max-w-6xl transition-all duration-300 transform ${
-            isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-          }`}
-        >
-          {currentSlide.type === 'demo' ? (
-            <AgentDemo />
-          ) : (
-            <SlideLayout slide={currentSlide} />
-          )}
+      {/* Main Scrollable Area - z-10 - Positioned between Header and Footer */}
+      <main 
+        ref={mainContentRef}
+        className="fixed top-20 bottom-20 left-0 right-0 overflow-y-auto overflow-x-hidden z-10"
+      >
+        {/* 
+          Container for centering content. 
+          min-h-full ensures it takes full height for centering small content,
+          but allows expansion for tall content.
+        */}
+        <div className="min-h-full flex flex-col justify-center p-8 w-full max-w-6xl mx-auto">
+          <div 
+            className={`w-full transition-all duration-300 transform ${
+              isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+            }`}
+          >
+            {currentSlide.type === 'demo' ? (
+              <AgentDemo />
+            ) : (
+              <SlideLayout slide={currentSlide} />
+            )}
+          </div>
         </div>
       </main>
 
-      {/* Footer / Controls */}
-      <footer className="w-full p-6 flex justify-between items-center z-10">
-        <div className="text-slate-500 text-sm font-mono">
+      {/* Fixed Footer - z-50 - Fixed height h-20 */}
+      <footer className="fixed bottom-0 left-0 right-0 h-20 px-6 flex justify-between items-center z-50 glass-panel border-t border-slate-800/50">
+        <div className="text-slate-500 text-sm font-mono w-16">
           {currentSlideIndex + 1} / {presentationSlides.length}
         </div>
 
@@ -98,7 +118,7 @@ const App: React.FC = () => {
           </button>
 
           {/* Progress Bar */}
-          <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-32 md:w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-blue-500 transition-all duration-500 ease-out"
               style={{ width: `${((currentSlideIndex + 1) / presentationSlides.length) * 100}%` }}
@@ -118,9 +138,9 @@ const App: React.FC = () => {
           </button>
         </div>
         
-        <div className="flex items-center space-x-2 text-xs text-slate-600">
-          <MonitorPlay className="w-3 h-3" />
-          <span>Use Arrow Keys to Navigate</span>
+        <div className="flex items-center space-x-2 text-xs text-slate-600 w-16 justify-end">
+          <MonitorPlay className="w-3 h-3 hidden md:block" />
+          <span className="hidden md:inline">Keys</span>
         </div>
       </footer>
     </div>

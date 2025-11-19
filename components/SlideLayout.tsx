@@ -11,18 +11,18 @@ export const SlideLayout: React.FC<SlideLayoutProps> = ({ slide }) => {
   // Title Slide
   if (slide.type === 'title') {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center py-10">
         <div className="mb-6 relative">
           <div className="absolute inset-0 bg-blue-500 blur-[40px] opacity-20 rounded-full"></div>
           <Cpu className="w-24 h-24 text-blue-400 relative z-10" />
         </div>
-        <h1 className="text-6xl md:text-7xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
           {slide.title}
         </h1>
-        <p className="text-xl md:text-2xl text-slate-400 max-w-2xl leading-relaxed">
+        <p className="text-xl md:text-2xl text-slate-400 max-w-2xl leading-relaxed mx-auto">
           {slide.subtitle}
         </p>
-        <div className="mt-12 flex items-center space-x-4 text-sm font-mono text-slate-500">
+        <div className="mt-12 flex items-center justify-center space-x-4 text-sm font-mono text-slate-500">
             <span className="flex items-center"><Sparkles className="w-4 h-4 mr-2 text-yellow-500" /> AI-Powered</span>
             <span className="w-1 h-1 bg-slate-700 rounded-full"></span>
             <span>Interactive Training</span>
@@ -34,7 +34,7 @@ export const SlideLayout: React.FC<SlideLayoutProps> = ({ slide }) => {
   // Standard Slide with Bullets
   if (slide.type === 'standard') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center h-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-full py-4">
         <div>
           <h2 className="text-4xl font-bold mb-2 text-white">{slide.title}</h2>
           {slide.subtitle && <h3 className="text-xl text-blue-400 mb-8">{slide.subtitle}</h3>}
@@ -75,7 +75,7 @@ export const SlideLayout: React.FC<SlideLayoutProps> = ({ slide }) => {
   // Card Grid Slide
   if (slide.type === 'cards') {
       return (
-          <div className="flex flex-col h-full justify-center">
+          <div className="flex flex-col min-h-full justify-center py-4">
               <div className="mb-12 text-center">
                   <h2 className="text-4xl font-bold mb-4 text-white">{slide.title}</h2>
                   <p className="text-slate-400 max-w-2xl mx-auto">{slide.subtitle}</p>
@@ -95,8 +95,8 @@ export const SlideLayout: React.FC<SlideLayoutProps> = ({ slide }) => {
                       if (title.toLowerCase().includes('intelligence')) Icon = Sparkles;
                       
                       return (
-                        <div key={idx} className="glass-panel p-6 rounded-xl hover:bg-slate-800/40 transition-all hover:-translate-y-1 border border-slate-700/50 flex flex-col">
-                            <div className="w-12 h-12 bg-blue-900/20 rounded-lg flex items-center justify-center mb-6 text-blue-400 border border-blue-500/20">
+                        <div key={idx} className="glass-panel p-6 rounded-xl hover:bg-slate-800/40 transition-all hover:-translate-y-1 border border-slate-700/50 flex flex-col h-full">
+                            <div className="w-12 h-12 bg-blue-900/20 rounded-lg flex items-center justify-center mb-6 text-blue-400 border border-blue-500/20 shrink-0">
                                 <Icon className="w-6 h-6"/>
                             </div>
                             <h3 className="text-xl font-semibold mb-3 text-slate-200">{title}</h3>
@@ -112,7 +112,7 @@ export const SlideLayout: React.FC<SlideLayoutProps> = ({ slide }) => {
   // Split Code Slide
   if (slide.type === 'split' || slide.type === 'code') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-full items-center py-4">
         <div className="flex flex-col justify-center">
           <h2 className="text-4xl font-bold mb-4 text-white">{slide.title}</h2>
           <p className="text-xl text-slate-400 mb-8 leading-relaxed">{slide.subtitle}</p>
