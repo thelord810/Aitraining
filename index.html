@@ -48,6 +48,22 @@
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(148, 163, 184, 0.1);
       }
+      
+      /* Loading animation for initial load */
+      .initial-loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #475569;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.875rem;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
+      }
     </style>
   <script type="importmap">
 {
@@ -62,6 +78,9 @@
 </script>
 </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="initial-loader">Initializing Agent Environment...</div>
+    </div>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
